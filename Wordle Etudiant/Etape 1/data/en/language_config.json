@@ -1,0 +1,15 @@
+{
+    "name_native": "English",
+    "help": {
+        "title": "How to Play",
+        "title_2": "Examples",
+        "text_1_1_1": "Guess the",
+        "text_1_1_2": "in six tries or less.",
+        "text_1_2": "Each guess must be a valid five letter word. Press the enter button to submit your guess.",
+        "text_1_3": "After you guess, the tiles will change color to indicate which letters of your word are correct or almost correct.",
+        "text_2_1": "is in the word and in the correct location!",
+        "text_2_2": "is in the word, but not in the correct location.",
+        "text_2_3": "is not present in the word you are trying to guess.",
+        "text_lettre": "The letter "
+    }
+}
