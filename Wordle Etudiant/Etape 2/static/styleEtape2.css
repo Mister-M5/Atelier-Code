@@ -1,0 +1,37 @@
+.key {
+    background-color: #666666;
+    color : white;
+}
+
+.correct {
+    background-color: #6aaa63 !important;
+    color: white;
+}
+
+.semicorrect {
+    background-color: #ccb757 !important;
+    color: white;
+}
+
+.incorrect {
+    background-color: #333333 !important;
+    color: white;
+}
+
+/* hides vue elements initially */
+[v-cloak] {
+    display: none;
+}
+
+.pink {
+    background-color : pink;
+}
+
+.green-gras {
+    font-weight: bold;
+    color : green;
+}
+
+.green {
+    color : green;
+}

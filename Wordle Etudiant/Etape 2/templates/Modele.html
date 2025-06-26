@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Wordle des Secondes</title>
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+        <!-- CSS -->
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+
+    <script>
+        const word_list = JSON.parse('{{language.word_list | tojson | safe}}');
+        const characters = JSON.parse('{{language.characters | tojson | safe}}');
+        const idx = "{{ language.idx }}";
+        const word = "{{ language.word }}";
+        console.log('\nIl y a ' + word_list.length + ' mots dans la liste\n' );
+        console.log("Set de charactères: " + characters);
+        console.log("Le mot est : " + word.toUpperCase() + "\nDon't cheat!");
+    </script>
+</head>
+
+
+<body class=" pink min-h-full h-screen">
+    <div id="app" class="h-full">
+        <div class="h-full">
+            <div class="wrapper container mx-auto flex flex-col h-full w-full ">
+                <!-- The Header -->
+                <header style="background-color: #333333" class=" items-center h-[50px] my-auto p-1 px-3 lg:px-1 border-b border-neutral-400">
+                    <div class="text-center">
+                        <h1 class="uppercase font-bold text-white text-2xl sm:text-4xl tracking-wider">Atelier Wordle<span
+                                class="ml-1 text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">{{
+                                language.language_code}}</span></h1>
+                    </div>
+                </header>
+                <center ><img src="{{img}}" height="640px" width="500px" ></center>
+                <main class="flex flex-auto justify-center items-center">
+                    <div>
+                        <h1 class = "green-gras"> Il y a {{language.word_list|length}} mots dans la liste </h1>
+                        <h1 class = "green"> Set de charactères: {{language.characters}} </h1>
+                        <h1 class = "green-gras" > Le mot est : {{language.word|upper}}</h1>
+                        <h1 class = "green">Dont't cheat !</h1>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
