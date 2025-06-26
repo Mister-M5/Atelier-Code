@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="{{ language.language_code }}" class="min-h-full">
+
+<head>
+    <title>Wordle des Secondes</title>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vue -->
+    <script src="https://unpkg.com/vue@3.0.2"></script>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+
+    <!-- load backend variables -->
+    <script>
+        const word_list = JSON.parse('{{language.word_list | tojson | safe}}');
+        const characters = JSON.parse('{{language.characters | tojson | safe}}');
+        const idx = "{{ language.idx }}";
+        const config = JSON.parse('{{language.config | tojson | safe}}');
+        const word = "{{ language.word }}";
+        console.log('\nIl y a ' + word_list.length + ' mots dans la liste\n' );
+        console.log("Set de charactères: " + characters);
+        console.log("Le mot est : " + word.toUpperCase() + "\nDon't cheat!");
+    </script>
+</head>
+
+<body style="background-color: #0E0E0F" class="min-h-full h-screen">
+    <div id="app" class="h-full">
+        <div class="h-full">
+            <div class="wrapper container mx-auto flex flex-col h-full w-full ">
+                <!-- The Header -->
+                <header style="background-color: #333333" class="relative flex flex-row justify-between items-center h-[50px] my-auto p-1 px-3 lg:px-1 border-b border-neutral-400">
+
+                    <!-- Bouton pour les règles -->
+                    <button class="z-40 text-neutral-100" aria-label="instructions"
+                        v-on:click="showHelpModal = !showHelpModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="text-neutral" width="24" height="24"
+                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <circle cx="12" cy="12" r="9"></circle>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                            <polyline points="11 12 12 12 12 16 13 16"></polyline>
+                        </svg>
+                    </button>
+
+                    <div class="absolute text-center right-0 left-0">
+                        <h1  class="uppercase font-bold text-white text-2xl sm:text-4xl tracking-wider">Atelier Wordle<span
+                                class="ml-1 text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">{{
+                                language.language_code}}</span></h1>
+                    </div>
+                    <img src="{{img}}"  class="h-[50px]">
+                </header>
+                <!-- The game board -->
+                <main class="flex flex-auto justify-center items-center">
+                    <div
+                        class="grid grid-rows-6 relative w-full h-full max-w-[370px] max-h-[440px] gap-2 p-3 box-border">
+                        {% for i in range(6) %}
+                        <div class="grid grid-cols-5 gap-2 w-full ">
+                            {% for j in range(5) %}
+                            <div class="w-full h-full justify-center items-center inline-flex rounded-lg "
+                                v-html="[[ tiles[{{i}}][{{j}}] ]]"
+                                v-bind:class="[[ tile_classes[{{i}}][{{j}}] ]]">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </main>
+                <!-- The keyboard -->
+                <div class="flex flex-col container mx-auto gap-3 w-full max-w-lg pb-2 md:pb-5 px-2">
+                    {% for row in language.keyboard %}
+                    <div class="flex gap-1">
+                        {% for c in row %}
+                        <button class="flex-1 rounded uppercase text-xl font-bold p-1 sm:p-2 h-14 key"
+                            data-char="{{ c }}" aria-label="{{ c }}" v-on:click="keyClick('{{ c }}')"
+                            v-bind:class="[[ key_classes['{{ c }}'] ]]">{{ c }}</button>
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+
+        <!-- help modal -->
+         <div class="container mx-auto flex w-full max-w-lg justify-center items-center overflow z-1" v-cloak>
+            <div v-show="showHelpModal"
+                class="opacity-25 fixed top-0 left-0 w-full h-full z-1 bg-black" v-cloak></div>
+            <div id="HelpModal" v-show="showHelpModal"
+                class="fixed top-10 left-0 w-full h-full z-50 items-center flex mx-auto " v-cloak>
+                <div style="background-color: #1d1d20" class="rounded-lg shadow-lg p-5 m-4 mx-auto w-full max-w-md sm:max-w-lg "
+                    v-cloak>
+                    <div class="flex flex-col gap-2 relative">
+
+                        <button class="absolute top-0 right-0 p-1 ml-auto z-50">
+                            <span v-on:click="showHelpModal = !showHelpModal"
+                                class="leading-[0.25] h-5 w-5 text-3xl text-neutral-400 block outline-none focus:outline-none">×</span>
+                        </button>
+                        <h2 class="flex mx-auto uppercase font-bold text-2xl tracking-wider text-white">Wordle <span
+                                class="ml-1 text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">{{
+                                language.config.name_native }}</span>
+                        </h2>
+
+                        <h3 class="font-bold text-lg text-white">{{ language.config.help.title }}</h3>
+                        <!-- how to play -->
+                        <p class="text-sm text-white">{{ language.config.help.text_1_1_1 }} <a
+                                class="font-bold uppercase text-white">Wordle</a> {{ language.config.help.text_1_1_2 }}</p>
+                        <p class="text-sm text-white">{{ language.config.help.text_1_2 }}</p>
+                        <p class="text-sm text-white">{{ language.config.help.text_1_3 }}</p>
+
+                        <div class="border-t-2 border-gray-300 rounded-lg"></div>
+                        <div class="justify-center items-center flex flex-col gap-2">
+                            <h2 class="text-md font-semibold text-white">{{ language.config.help.title_2 }}</h2>
+
+                            <div class="grid grid-cols-5 gap-1 w-full max-w-xs text-white">
+                                {% for c in language.word_list[0] %}
+                                {% if loop.index == 1 %}
+                                <div
+                                    class="w-full h-full inline-flex justify-center items-center correct text-2xl tiny:text-4xl uppercase font-bold select-none text-white rounded-lg">
+                                    {{c}}</div>
+                                {% else %}
+                                <div
+                                    class="w-full h-full inline-flex aspect-square justify-center items-center text-2xl tiny:text-4xl uppercase font-bold select-none border-2 border-neutral-500 rounded-lg">
+                                    {{c}}</div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p class="text-sm mb-2 text-white"> {{language.config.help.text_lettre}} <span
+                                    style="color : #6aaa63" class="font-bold uppercase">{{language.word_list[0][0]}}</span> {{
+                                language.config.help.text_2_1 }}</p>
+                            <!-- w-full h-full inline-flex justify-center items-center incorrect text-2xl tiny:text-4xl uppercase font-bold select-none text-white -->
+
+                            <div class="grid grid-cols-5 gap-1 w-full max-w-xs text-white">
+                                {% for c in language.word_list[1] %}
+                                {% if loop.index == 3 %}
+                                <div
+                                    class="w-full h-full inline-flex justify-center items-center semicorrect text-2xl tiny:text-4xl uppercase font-bold select-none text-white rounded-lg">
+                                    {{c}}</div>
+                                {% else %}
+                                <div
+                                    class="w-full h-full inline-flex aspect-square justify-center items-center text-2xl tiny:text-4xl uppercase font-bold select-none border-2 border-neutral-500 rounded-lg">
+                                    {{c}}</div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p class="text-sm mb-2 text-white"> {{language.config.help.text_lettre}} <span
+                                   style="color : #ccb757" class="font-bold uppercase text-white">{{language.word_list[1][2]}}</span> {{
+                                language.config.help.text_2_2 }}</p>
+
+                            <div class="grid grid-cols-5 gap-1 w-full max-w-xs ">
+                                {% for c in language.word_list[2] %}
+                                {% if loop.index == 5 %}
+                                <div
+                                    class="w-full h-full inline-flex justify-center items-center incorrect text-2xl tiny:text-4xl uppercase font-bold select-none text-white rounded-lg">
+                                    {{c}}</div>
+                                {% else %}
+                                <div
+                                    class="w-full h-full inline-flex aspect-square justify-center items-center text-2xl tiny:text-4xl text-white uppercase font-bold select-none border-2 border-neutral-500 rounded-lg">
+                                    {{c}}</div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p class="text-sm mb-2 text-white"> {{language.config.help.text_lettre}}<span
+                                    class="font-bold uppercase text-neutral-400 ">{{language.word_list[2][4]}}</span> {{
+                                language.config.help.text_2_3 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- alert that floats and closes after 3 seconds -->
+        <div v-if="notification.show"
+            class="fixed top-20 inset-x-0 mx-auto z-40 max-w-xs justify-items-center text-center" v-cloak>
+            <div class="top-40 bg-white p-4 m-4 rounded-lg shadow-lg animate-pulse" v-cloak
+                v-bind:style="{'top': notification.top + 'px'}">
+                <p class="font-bold text-black">[[ notification.message ]]</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="{{ url_for('static', filename='Solution.js') }}"></script>
+</body>
+</html>

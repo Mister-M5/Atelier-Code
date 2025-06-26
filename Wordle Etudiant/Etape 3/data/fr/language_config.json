@@ -1,0 +1,15 @@
+{
+    "name_native": "francais",
+    "help": {
+        "title": "Comment jouer ?",
+        "title_2": "Exemple ",
+        "text_1_1_1": "Deviner le ",
+        "text_1_1_2": "en six essais ou moins : ",
+        "text_1_2": "A chaque raffraichissement, un mot de 5 lettres est choisi aleatoirement. Vous devez le deviner en 6 essais. ",
+        "text_1_3": "A chaque essai, les lettres du mot que vous avez propose changeront de couleur en fonction de a quel point vous etes proche de le trouver. ",
+        "text_2_1": " est dans le mot, a la bonne place. ",
+        "text_2_2": "est dans le mot, mais pas a la bonne place.",
+        "text_2_3": "n'est pas dans le mot. ",
+        "text_lettre": "La lettre "
+    }
+}
